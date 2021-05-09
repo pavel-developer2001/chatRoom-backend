@@ -1,28 +1,25 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../db");
-const Room = require("./room");
 
-const User = sequelize.define("users", {
+const Room = sequelize.define("rooms", {
 	id: {
 		primaryKey: true,
 		autoIncrement: true,
 		allowNull: false,
 		type: Sequelize.INTEGER,
 	},
-	user: {
+	roomName: {
 		type: Sequelize.STRING,
 		allowNull: false,
 	},
-	email: {
+	roomText: {
 		type: Sequelize.STRING,
 		allowNull: false,
 	},
-	password: {
+	roomPicture: {
 		type: Sequelize.STRING,
 		allowNull: false,
 	},
 });
-User.hasMany(Room);
-Room.belongsTo(User);
 
-module.exports = User;
+module.exports = Room;

@@ -8,6 +8,12 @@ const generateJwt = (id, user, email) => {
 	});
 };
 class UserController {
+	async getUsers(req, res) {
+		const users = await User.findAll();
+		res.json({
+			data: users,
+		});
+	}
 	async login(req, res) {
 		const { email, password } = req.body;
 		const findUser = await User.findOne({ where: { email: email } });
