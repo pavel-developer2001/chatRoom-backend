@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../db");
 const Message = require("./message");
+const Participant = require("./participant");
 
 const Room = sequelize.define("rooms", {
 	id: {
@@ -24,5 +25,8 @@ const Room = sequelize.define("rooms", {
 });
 Room.hasMany(Message);
 Message.belongsTo(Room);
+
+Room.hasMany(Participant);
+Participant.belongsTo(Room);
 
 module.exports = Room;

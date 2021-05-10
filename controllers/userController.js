@@ -15,17 +15,6 @@ class UserController {
 			data: users,
 		});
 	}
-	async getUsersRoom(req, res) {
-		// TODO: получить пользователей данной комнаты и выводить на клиенте с помощью userSlice,
-		// , подключить сокеты чтобы мнгновенно отображались новые сообщения в нескольких вкладках
-		const { roomId } = req.query;
-		const users = await User.findAll();
-		const ttt = users.map((user) => user.id);
-		console.log(roomId);
-		console.log(ttt);
-		// const usersRoom = await Message.findAll({ where: { userId: users.id } });
-		// res.json({ messages: "Участники данной комнаты", data: { usersRoom } });
-	}
 	async login(req, res) {
 		const { email, password } = req.body;
 		const findUser = await User.findOne({ where: { email: email } });
