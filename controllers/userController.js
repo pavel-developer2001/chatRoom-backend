@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Message = require("../models/message");
 
 const generateJwt = (id, user, email) => {
 	return jwt.sign({ id, user, email }, process.env.SECRET_KEY || "secret key", {
@@ -13,6 +14,17 @@ class UserController {
 		res.json({
 			data: users,
 		});
+	}
+	async getUsersRoom(req, res) {
+		// TODO: получить пользователей данной комнаты и выводить на клиенте с помощью userSlice, добавление сообщение в комнату с отправкой
+		// на бэкенд roomId и userId, подключить сокеты чтобы мнгновенно отображались новые сообщения в нескольких вкладках
+		const { roomId } = req.query;
+		const users = await User.findAll();
+		const ttt = users.map((user) => user.id);
+		console.log(roomId);
+		console.log(ttt);
+		// const usersRoom = await Message.findAll({ where: { userId: users.id } });
+		// res.json({ messages: "Участники данной комнаты", data: { usersRoom } });
 	}
 	async login(req, res) {
 		const { email, password } = req.body;

@@ -1,7 +1,8 @@
 const Room = require("../models/room");
+const Message = require("../models/message");
 class RoomController {
 	async createRoom(req, res) {
-		const { roomName, roomText, roomPicture } = req.body;
+		const { roomName, roomText, roomPicture, userId } = req.body;
 		const findRoom = await Room.findOne({ where: { roomName: roomName } });
 		if (roomName === "") {
 			res.json({ message: "Введите имя комнаты" });
@@ -15,13 +16,18 @@ class RoomController {
 			roomName: roomName,
 			roomText: roomText,
 			roomPicture: roomPicture,
-			userId: 2,
+			userId: userId,
 		});
 		res.json({ message: "Комната создана!!!", data: newRoom });
 	}
 	async getAllRooms(req, res) {
 		const rooms = await Room.findAll();
 		res.json({ data: rooms });
+	}
+	async getMessagesRoom(req, res) {
+		const { id } = req.params;
+		const messages = await Message.findAll({ where: { roomId: id } });
+		res.json({ message: "Все сообщения этой комнаты", data: messages });
 	}
 	async getRoom(req, res) {
 		const { id } = req.params;

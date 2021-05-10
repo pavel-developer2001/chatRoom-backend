@@ -5,6 +5,11 @@ const cors = require("cors");
 const router = require("./router");
 const sequelize = require("./db");
 
+const server = require("http").Server(app);
+const io = require("socket.io")(server);
+
+// module.exports = io;
+
 app.use(express.json());
 app.use(cors());
 
@@ -12,12 +17,16 @@ app.use("/api", router);
 
 const PORT = process.env.PORT || 3001;
 
+io.on("connection", (socket) => {
+	console.log(`user connection ${socket} `);
+});
 const start = async () => {
 	try {
 		await sequelize.sync();
-		app.listen(PORT, () => console.log(`server start to port is ${PORT}`));
+		server.listen(PORT, () => console.log(`server start to port is ${PORT}`));
 	} catch (err) {
 		console.log(err);
 	}
 };
+
 start();
