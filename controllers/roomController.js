@@ -3,6 +3,9 @@ const Message = require("../models/message");
 const Participant = require("../models/participant");
 class RoomController {
 	async createRoom(req, res) {
+		console.log("DDDDDDDDDDDDDAAAAAAAAAAAATTTTTTTTTTTAAAAAAAAAAA", req);
+		console.log("IMGADESSSSSSSSS", req.files);
+		console.log("data", req.body);
 		const { roomName, roomText, roomPicture, userId } = req.body;
 		const findRoom = await Room.findOne({ where: { roomName: roomName } });
 		if (roomName === "") {
