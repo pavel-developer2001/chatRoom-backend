@@ -5,9 +5,6 @@ var multer = require("multer");
 var upload = multer().single("roomPicture");
 class RoomController {
 	async createRoom(req, res) {
-		console.log("IMGADESSSSSSSSS", req.file);
-		// console.log("rommPictire", req.files.roomPicture);
-		console.log("data", req.body);
 		const { roomName, roomText, userId } = req.body;
 		const findRoom = await Room.findOne({ where: { roomName: roomName } });
 		if (roomName === "") {
@@ -24,7 +21,6 @@ class RoomController {
 			roomPicture: req.file.filename,
 			userId: Number(userId),
 		});
-		console.log("NEW ROOOOOOOOOOOOOOM", newRoom);
 		res.json({ message: "Комната создана!!!", data: newRoom });
 	}
 	async getAllRooms(req, res) {
