@@ -1,12 +1,11 @@
 const Room = require("../models/room");
 const Message = require("../models/message");
 const Participant = require("../models/participant");
+var multer = require("multer");
+var upload = multer().single("roomPicture");
 class RoomController {
 	async createRoom(req, res) {
-		console.log("DDDDDDDDDDDDDAAAAAAAAAAAATTTTTTTTTTTAAAAAAAAAAA", req);
-		console.log("IMGADESSSSSSSSS", req.files);
-		console.log("data", req.body);
-		const { roomName, roomText, roomPicture, userId } = req.body;
+		const { roomName, roomText, userId } = req.body;
 		const findRoom = await Room.findOne({ where: { roomName: roomName } });
 		if (roomName === "") {
 			res.json({ message: "Введите имя комнаты" });
@@ -19,8 +18,8 @@ class RoomController {
 		const newRoom = await Room.create({
 			roomName: roomName,
 			roomText: roomText,
-			roomPicture: roomPicture,
-			userId: userId,
+			roomPicture: req.file.filename,
+			userId: Number(userId),
 		});
 		res.json({ message: "Комната создана!!!", data: newRoom });
 	}

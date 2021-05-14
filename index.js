@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors");
 const router = require("./router");
 const sequelize = require("./db");
+const bodyParser = require("body-parser");
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
@@ -12,6 +13,8 @@ const io = require("socket.io")(server);
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static("client/src/static/"));
 
 app.use("/api", router);
 
