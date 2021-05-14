@@ -1,9 +1,10 @@
 const Room = require("../models/room");
 const Message = require("../models/message");
 const Participant = require("../models/participant");
+var multer = require("multer");
+var upload = multer().single("roomPicture");
 class RoomController {
 	async createRoom(req, res) {
-		console.log("DDDDDDDDDDDDDAAAAAAAAAAAATTTTTTTTTTTAAAAAAAAAAA", req);
 		console.log("IMGADESSSSSSSSS", req.file);
 		// console.log("rommPictire", req.files.roomPicture);
 		console.log("data", req.body);
@@ -17,12 +18,20 @@ class RoomController {
 				.status(404)
 				.json({ message: "Комната с таким название уже существует" });
 		}
+		// upload(req, res, function (err) {
+		// 	if (err instanceof multer.MulterError) {
+		// 		// A Multer error occurred when uploading.
+		// 	} else if (err) {
+		// 		// An unknown error occurred when uploading.
+		// 	}
+		// });
 		const newRoom = await Room.create({
 			roomName: roomName,
 			roomText: roomText,
-			roomPicture: roomPicture,
-			userId: userId,
+			roomPicture,
+			userId: Number(userId),
 		});
+		console.log("NEW ROOOOOOOOOOOOOOM", newRoom);
 		res.json({ message: "Комната создана!!!", data: newRoom });
 	}
 	async getAllRooms(req, res) {
