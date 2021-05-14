@@ -8,7 +8,7 @@ class RoomController {
 		console.log("IMGADESSSSSSSSS", req.file);
 		// console.log("rommPictire", req.files.roomPicture);
 		console.log("data", req.body);
-		const { roomName, roomText, roomPicture, userId } = req.body;
+		const { roomName, roomText, userId } = req.body;
 		const findRoom = await Room.findOne({ where: { roomName: roomName } });
 		if (roomName === "") {
 			res.json({ message: "Введите имя комнаты" });
@@ -18,17 +18,10 @@ class RoomController {
 				.status(404)
 				.json({ message: "Комната с таким название уже существует" });
 		}
-		// upload(req, res, function (err) {
-		// 	if (err instanceof multer.MulterError) {
-		// 		// A Multer error occurred when uploading.
-		// 	} else if (err) {
-		// 		// An unknown error occurred when uploading.
-		// 	}
-		// });
 		const newRoom = await Room.create({
 			roomName: roomName,
 			roomText: roomText,
-			roomPicture,
+			roomPicture: req.file.filename,
 			userId: Number(userId),
 		});
 		console.log("NEW ROOOOOOOOOOOOOOM", newRoom);
