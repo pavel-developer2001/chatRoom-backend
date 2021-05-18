@@ -1,17 +1,29 @@
 const Participant = require("../models/participant");
+// const server = require("../index");
+// const io = require("socket.io")(server);
 
 class ParticipantController {
 	async connectParticipant(req, res) {
-		const { participantName, roomId, userId } = req.body;
-		const newParticipant = await Participant.create({
-			participantName,
-			roomId,
-			userId,
-		});
-		res.json({
-			message: "Подключился новый пользователь",
-			data: newParticipant,
-		});
+		try {
+			const { participantName, roomId, userId } = req.body;
+			// io.on("connection", (socket) => {
+			// 	console.log(socket);
+			// 	socket.on("ROOM:JOIN", ({ id, name }) => {
+			// 		console.log(`user connection ${id} `);
+			// 	});
+			// });
+			const newParticipant = await Participant.create({
+				participantName,
+				roomId,
+				userId,
+			});
+			res.json({
+				message: "Подключился новый пользователь",
+				data: newParticipant,
+			});
+		} catch (e) {
+			console.log(e);
+		}
 	}
 	async disconnectParticipant(req, res) {
 		const { userId } = req.query;
