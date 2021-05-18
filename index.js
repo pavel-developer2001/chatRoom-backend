@@ -15,12 +15,17 @@ app.use(express.static("client/src/static/"));
 
 app.use("/api", router);
 
+// const participantController = require("./controllers/participantController");
+const Participant = require("./models/participant");
 io.on("connection", (socket) => {
 	console.log("К СОКЕТАМ ПОДКЛЮЧИЛИСЬ!!!", socket.id);
-	socket.on("ROOM:JOIN", ({ id, name, userName }) => {
+	socket.on("ROOM:JOIN", async ({ id, name, userName }) => {
 		console.log(
 			`USER CONNECT in ROOM IS ${id}. ROOM NAME IS ${name}. USERNAME IS ${userName} `
 		);
+		const users = await Participant.findAll({ where: { roomId: id } });
+		socket.join(`/api/rooms/${id}`);
+		socket.to(id).emit("ROOM:SET_USERS", users);
 	});
 	socket.on("disconnect", (socket) => {
 		// socket.on("ROOM:EXIT", (socket) => {
