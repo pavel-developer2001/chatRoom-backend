@@ -17,15 +17,26 @@ app.use("/api", router);
 
 // const participantController = require("./controllers/participantController");
 const Participant = require("./models/participant");
+const Message = require("./models/message");
 io.on("connection", (socket) => {
 	console.log("К СОКЕТАМ ПОДКЛЮЧИЛИСЬ!!!", socket.id);
-	socket.on("ROOM:JOIN", async ({ id, name, userName }) => {
+	socket.on("ROOM:JOIN", ({ id, name, userName }) => {
 		console.log(
 			`USER CONNECT in ROOM IS ${id}. ROOM NAME IS ${name}. USERNAME IS ${userName} `
 		);
-		const users = await Participant.findAll({ where: { roomId: id } });
-		socket.join(`/api/rooms/${id}`);
+		const users = Participant.findAll({ where: { roomId: id } });
+		socket.join(`api/rooms/${id}`);
 		socket.to(id).emit("ROOM:SET_USERS", users);
+	});
+	socket.on("ROOM:NEW_MESSAGE", ({ roomId, userId, text }) => {
+		console.log(`ROOM_IS IS ${roomId}. USERNAME IS ${userId}. TEXT IS ${text}`);
+		// const newMessage = await Message.create({
+		// 	messageText: text,
+		// 	userId: userId,
+		// 	roomId: roomId,
+		// });
+		const allMessageRoom = Message.findAll({ where: { roomId } });
+		socket.to(roomId).emit("ROOM:NEW_MESSAGE", allMessageRoom);
 	});
 	socket.on("disconnect", (socket) => {
 		// socket.on("ROOM:EXIT", (socket) => {
