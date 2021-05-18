@@ -15,13 +15,20 @@ app.use(express.static("client/src/static/"));
 
 app.use("/api", router);
 
-// console.log(io);
 io.on("connection", (socket) => {
-	console.log("sfadsfdhsdfhsdfhdshdsfhdsfhsdhsdhfdsfs", socket);
-	socket.on("ROOM:JOIN", ({ id, name }) => {
-		console.log(`user connection ${id} `);
+	console.log("К СОКЕТАМ ПОДКЛЮЧИЛИСЬ!!!", socket.id);
+	socket.on("ROOM:JOIN", ({ id, name, userName }) => {
+		console.log(
+			`USER CONNECT in ROOM IS ${id}. ROOM NAME IS ${name}. USERNAME IS ${userName} `
+		);
+	});
+	socket.on("disconnect", (socket) => {
+		// socket.on("ROOM:EXIT", (socket) => {
+		// 	console.log(`EXIT IS ROOM IS ${socket}`);
+		// });
 	});
 });
+
 const PORT = process.env.PORT || 3001;
 
 const start = async () => {
