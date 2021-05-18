@@ -6,6 +6,7 @@ class ParticipantController {
 	async connectParticipant(req, res) {
 		try {
 			const { participantName, roomId, userId } = req.body;
+			// console.log(io);
 			// io.on("connection", (socket) => {
 			// 	console.log(socket);
 			// 	socket.on("ROOM:JOIN", ({ id, name }) => {

@@ -6,7 +6,7 @@ const router = require("./router");
 const sequelize = require("./db");
 
 const server = require("http").Server(app);
-const io = require("socket.io")(server);
+const io = require("socket.io")(server, { cors: { origin: "*" } });
 
 app.use(express.json());
 app.use(cors());
@@ -17,7 +17,7 @@ app.use("/api", router);
 
 // console.log(io);
 io.on("connection", (socket) => {
-	console.log(socket);
+	console.log("sfadsfdhsdfhsdfhdshdsfhdsfhsdhsdhfdsfs", socket);
 	socket.on("ROOM:JOIN", ({ id, name }) => {
 		console.log(`user connection ${id} `);
 	});
@@ -34,4 +34,4 @@ const start = async () => {
 };
 
 start();
-module.exports = server;
+// module.exports = server;
