@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
 		console.log(
 			`USER CONNECT in ROOM IS ${id}. ROOM NAME IS ${name}. USERNAME IS ${userName} `
 		);
-		socket.join(`room/${id}`);
+		socket.join(id);
 		const users = await Participant.findAll({ where: { roomId: id } });
 		socket.to(id).emit("ROOM:SET_USERS", users);
 	});
@@ -35,6 +35,7 @@ io.on("connection", (socket) => {
 		// 	userId: userId,
 		// 	roomId: roomId,
 		// });
+		socket.join(roomId);
 		const allMessageRoom = await Message.findAll({ where: { roomId } });
 		socket.to(roomId).emit("ROOM:NEW_MESSAGE", allMessageRoom);
 	});
