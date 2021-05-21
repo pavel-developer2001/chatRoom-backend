@@ -4,25 +4,43 @@ const app = express();
 const cors = require("cors");
 const router = require("./router");
 const sequelize = require("./db");
-const bodyParser = require("body-parser");
 
 const server = require("http").Server(app);
-const io = require("socket.io")(server);
-
-// module.exports = io;
+const io = require("socket.io")(server, { cors: { origin: "*" } });
 
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
+
 app.use(express.static("client/src/static/"));
 
 app.use("/api", router);
 
+const Participant = require("./models/participant");
+const Message = require("./models/message");
+io.on("connection", (socket) => {
+	console.log("К СОКЕТАМ ПОДКЛЮЧИЛИСЬ!!!", socket.id);
+	socket.on("ROOM:JOIN", async ({ id, name, userName }) => {
+		console.log(
+			`USER CONNECT in ROOM IS ${id}. ROOM NAME IS ${name}. USERNAME IS ${userName} `
+		);
+		socket.join(id);
+		const users = await Participant.findAll({ where: { roomId: id } });
+		socket.to(id).emit("ROOM:SET_USERS", users);
+	});
+	socket.on("ROOM:NEW_MESSAGE", async ({ roomId, userId, text }) => {
+		console.log(`ROOM_IS IS ${roomId}. USERNAME IS ${userId}. TEXT IS ${text}`);
+		socket.join(roomId);
+		const allMessageRoom = await Message.findAll({ where: { roomId } });
+		socket.to(roomId).emit("ROOM:NEW_MESSAGE", allMessageRoom);
+	});
+	socket.on("disconnect", async (socket) => {
+		const users = await Participant.findAll({ where: { roomId: id } });
+		socket.to(id).emit("ROOM:SET_USERS", users);
+	});
+});
+
 const PORT = process.env.PORT || 3001;
 
-io.on("connection", (socket) => {
-	console.log(`user connection ${socket} `);
-});
 const start = async () => {
 	try {
 		await sequelize.sync();
