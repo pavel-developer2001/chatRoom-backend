@@ -24,8 +24,8 @@ io.on("connection", (socket) => {
 		console.log(
 			`USER CONNECT in ROOM IS ${id}. ROOM NAME IS ${name}. USERNAME IS ${userName} `
 		);
+		socket.join(`room/${id}`);
 		const users = await Participant.findAll({ where: { roomId: id } });
-		socket.join(`api/rooms/${id}`);
 		socket.to(id).emit("ROOM:SET_USERS", users);
 	});
 	socket.on("ROOM:NEW_MESSAGE", async ({ roomId, userId, text }) => {
