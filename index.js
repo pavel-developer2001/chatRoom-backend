@@ -15,7 +15,6 @@ app.use(express.static("client/src/static/"));
 
 app.use("/api", router);
 
-// const participantController = require("./controllers/participantController");
 const Participant = require("./models/participant");
 const Message = require("./models/message");
 io.on("connection", (socket) => {
@@ -30,19 +29,13 @@ io.on("connection", (socket) => {
 	});
 	socket.on("ROOM:NEW_MESSAGE", async ({ roomId, userId, text }) => {
 		console.log(`ROOM_IS IS ${roomId}. USERNAME IS ${userId}. TEXT IS ${text}`);
-		// const newMessage = await Message.create({
-		// 	messageText: text,
-		// 	userId: userId,
-		// 	roomId: roomId,
-		// });
 		socket.join(roomId);
 		const allMessageRoom = await Message.findAll({ where: { roomId } });
 		socket.to(roomId).emit("ROOM:NEW_MESSAGE", allMessageRoom);
 	});
-	socket.on("disconnect", (socket) => {
-		// socket.on("ROOM:EXIT", (socket) => {
-		// 	console.log(`EXIT IS ROOM IS ${socket}`);
-		// });
+	socket.on("disconnect", async (socket) => {
+		const users = await Participant.findAll({ where: { roomId: id } });
+		socket.to(id).emit("ROOM:SET_USERS", users);
 	});
 });
 
@@ -58,4 +51,3 @@ const start = async () => {
 };
 
 start();
-// module.exports = server;
