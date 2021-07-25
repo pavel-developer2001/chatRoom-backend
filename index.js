@@ -18,36 +18,33 @@ app.use("/api", router);
 const Participant = require("./models/participant");
 const Message = require("./models/message");
 io.on("connection", (socket) => {
-	console.log("К СОКЕТАМ ПОДКЛЮЧИЛИСЬ!!!", socket.id);
-	socket.on("ROOM:JOIN", async ({ id, name, userName }) => {
-		console.log(
-			`USER CONNECT in ROOM IS ${id}. ROOM NAME IS ${name}. USERNAME IS ${userName} `
-		);
-		socket.join(id);
-		const users = await Participant.findAll({ where: { roomId: id } });
-		socket.to(id).emit("ROOM:SET_USERS", users);
-	});
-	socket.on("ROOM:NEW_MESSAGE", async ({ roomId, userId, text }) => {
-		console.log(`ROOM_IS IS ${roomId}. USERNAME IS ${userId}. TEXT IS ${text}`);
-		socket.join(roomId);
-		const allMessageRoom = await Message.findAll({ where: { roomId } });
-		socket.to(roomId).emit("ROOM:NEW_MESSAGE", allMessageRoom);
-	});
-	socket.on("disconnect", async (socket) => {
-		const users = await Participant.findAll({ where: { roomId: id } });
-		socket.to(id).emit("ROOM:SET_USERS", users);
-	});
+  console.log("К СОКЕТАМ ПОДКЛЮЧИЛИСЬ!!!", socket.id);
+  socket.on("ROOM:JOIN", async ({ id, name, userName }) => {
+    console.log(
+      `USER CONNECT in ROOM IS ${id}. ROOM NAME IS ${name}. USERNAME IS ${userName} `
+    );
+    socket.join(id);
+    const users = await Participant.findAll({ where: { roomId: id } });
+    socket.to(id).emit("ROOM:SET_USERS", users);
+  });
+  socket.on("ROOM:NEW_MESSAGE", async ({ roomId, userId, text }) => {
+    console.log(`ROOM_IS IS ${roomId}. USERNAME IS ${userId}. TEXT IS ${text}`);
+    socket.join(roomId);
+    const allMessageRoom = await Message.findAll({ where: { roomId } });
+    socket.to(roomId).emit("ROOM:NEW_MESSAGE", allMessageRoom);
+  });
+  socket.on("disconnect", async (socket) => {});
 });
 
 const PORT = process.env.PORT || 3001;
 
 const start = async () => {
-	try {
-		await sequelize.sync();
-		server.listen(PORT, () => console.log(`server start to port is ${PORT}`));
-	} catch (err) {
-		console.log(err);
-	}
+  try {
+    await sequelize.sync();
+    server.listen(PORT, () => console.log(`server start to port is ${PORT}`));
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 start();
